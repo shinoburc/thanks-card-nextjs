@@ -15,4 +15,17 @@ model User {
   name   String   @unique
   password   String
   isAdmin   Boolean
+  fromThanksCards ThanksCard[] @relation("FromThanksCards")
+  toThanksCards ThanksCard[] @relation("ToThanksCards")
+}
+
+model ThanksCard {
+  id      Int      @default(autoincrement()) @id
+  title      String
+  body      String
+  from    User     @relation("FromThanksCards", fields: [fromId], references: [id])
+  fromId  Int
+  to    User     @relation("ToThanksCards", fields: [toId], references: [id])
+  toId  Int
+  createdAt DateTime? @default(now())
 }
