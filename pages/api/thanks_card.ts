@@ -8,6 +8,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ThanksCard[]>
 ) {
-  const thanks_cards = await prisma.thanksCard.findMany();
+  const thanks_cards = await prisma.thanksCard.findMany({
+    include: {
+      from: true,
+      to: true,
+    },
+  });
   res.status(200).json(thanks_cards);
 }
