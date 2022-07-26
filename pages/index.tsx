@@ -5,6 +5,8 @@ import styles from "../styles/Home.module.css";
 import React from "react";
 import useSWR from "swr";
 import { Prisma } from "@prisma/client";
+
+/* ライブラリ Material-UI が提供するコンポーネントの import */
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -13,12 +15,14 @@ import TableRow from "@mui/material/TableRow";
 
 const Home: NextPage = () => {
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  /* ThanksCard の外部キー(From, To)も含んだ型を定義している */
   type ThanksCardPayload = Prisma.ThanksCardGetPayload<{
     include: {
       from: true;
       to: true;
     };
   }>;
+  /* SWR を使用して /api/thanks_card からデータを取得し、 thanks_cards 配列で受け取る */
   const { data: thanks_cards, error } = useSWR<ThanksCardPayload[]>(
     "/api/thanks_card",
     fetcher
@@ -50,6 +54,7 @@ const Home: NextPage = () => {
               </TableRow>
             </TableHead>
             <TableBody>
+              {/* thanks_cards 全件をテーブル出力する */}
               {thanks_cards?.map((thanks_card: ThanksCardPayload) => {
                 return (
                   <TableRow key={thanks_card.id}>
