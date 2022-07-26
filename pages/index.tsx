@@ -3,8 +3,30 @@ import Head from "next/head";
 import Image from "next/image";
 import styles from "../styles/Home.module.css";
 import React from "react";
+import useSWR from "swr";
+import { Prisma } from "@prisma/client";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableHead from "@mui/material/TableHead";
+import TableRow from "@mui/material/TableRow";
 
 const Home: NextPage = () => {
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  type ThanksCardPayload = Prisma.ThanksCardGetPayload<{
+    include: {
+      from: true;
+      to: true;
+    };
+  }>;
+  const { data: thanks_cards, error } = useSWR<ThanksCardPayload[]>(
+    "/api/thanks_card",
+    fetcher
+  );
+
+  if (error) return <div>An error has occurred.</div>;
+  if (!thanks_cards) return <div>Loading...</div>;
+
   return (
     <div className={styles.container}>
       <Head>
@@ -15,6 +37,34 @@ const Home: NextPage = () => {
 
       <main className={styles.main}>
         <h1 className={styles.title}> Welcome to ThanksCard </h1>
+        <div>
+          <Table size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>id</TableCell>
+                <TableCell>title</TableCell>
+                <TableCell>body</TableCell>
+                <TableCell>from</TableCell>
+                <TableCell>to</TableCell>
+                <TableCell>createdAt</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {thanks_cards?.map((thanks_card: ThanksCardPayload) => {
+                return (
+                  <TableRow key={thanks_card.id}>
+                    <TableCell>{thanks_card.id}</TableCell>
+                    <TableCell>{thanks_card.title}</TableCell>
+                    <TableCell>{thanks_card.body}</TableCell>
+                    <TableCell>{thanks_card.from.name}</TableCell>
+                    <TableCell>{thanks_card.to.name}</TableCell>
+                    <TableCell>{thanks_card.createdAt?.toString()}</TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </div>
 
         <div className={styles.grid}>
           <p>Thanks</p>

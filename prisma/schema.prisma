@@ -5,15 +5,15 @@ generator client {
   provider = "prisma-client-js"
 }
 
-//datasource db {
-//  provider = "postgresql"
-//  url      = env("DATABASE_URL")
-//}
-
 datasource db {
-  provider = "sqlite"
-  url      = "file:./dev.db"
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
+
+//datasource db {
+//  provider = "sqlite"
+//  url      = "file:./dev.db"
+//}
 
 model User {
   id      Int      @default(autoincrement()) @id
@@ -32,5 +32,5 @@ model ThanksCard {
   fromId  Int
   to    User     @relation("ToThanksCards", fields: [toId], references: [id])
   toId  Int
-  createdAt DateTime? @default(now())
+  createdAt DateTime @default(now())
 }
