@@ -57,6 +57,7 @@ const Home: NextPage = () => {
               {/* thanks_cards 全件をテーブル出力する */}
               {thanks_cards?.map((thanks_card: ThanksCardPayload) => {
                 return (
+                  /* 一覧系の更新箇所を特定するために一意となる key を設定する必要がある */
                   <TableRow key={thanks_card.id}>
                     <TableCell>{thanks_card.id}</TableCell>
                     <TableCell>{thanks_card.title}</TableCell>
