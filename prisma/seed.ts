@@ -3,28 +3,28 @@ const prisma = new PrismaClient();
 
 async function main() {
   const admin = await prisma.user.upsert({
-    where: { name: "admin" },
+    where: { email: "admin@ts.occ.co.jp" },
     update: {},
     create: {
       name: "admin",
+      email: "admin@ts.occ.co.jp",
       password: "admin",
-      isAdmin: true,
     },
   });
 
   const user = await prisma.user.upsert({
-    where: { name: "user" },
+    where: { email: "user@ts.occ.co.jp" },
     update: {},
     create: {
       name: "user",
+      email: "user@ts.occ.co.jp",
       password: "user",
-      isAdmin: false,
     },
   });
   console.log({ admin, user });
 
   const tc1 = await prisma.thanksCard.upsert({
-    where: { id: 1 },
+    where: { id: "thanks_card_test1" },
     update: {},
     create: {
       title: "thankscard1 title",
@@ -34,7 +34,7 @@ async function main() {
     },
   });
   const tc2 = await prisma.thanksCard.upsert({
-    where: { id: 2 },
+    where: { id: "thanks_card_test2" },
     update: {},
     create: {
       title: "thankscard2 title",
