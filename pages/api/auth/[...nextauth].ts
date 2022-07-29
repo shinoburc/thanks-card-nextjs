@@ -38,7 +38,6 @@ export default NextAuth({
           },
         });
         if (user) {
-          console.log(user);
           return user;
         } else {
           return null;
