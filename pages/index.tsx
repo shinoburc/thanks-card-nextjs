@@ -8,7 +8,7 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import ThanksCardList from "./components/thanks_card/list";
 
 const Home: NextPage = () => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   return (
     <div className={styles.container}>
       <Head>
@@ -18,13 +18,14 @@ const Home: NextPage = () => {
       </Head>
 
       <div>
-        {session && (
+        <p>status: {status}</p>
+        {status === "authenticated" && (
           <>
             Signed in as {session?.user?.name} <br />
             <button onClick={() => signOut()}>Sign out</button>
           </>
         )}
-        {!session && (
+        {status !== "authenticated" && (
           <>
             <button onClick={() => signIn()}>Sign in</button>
           </>

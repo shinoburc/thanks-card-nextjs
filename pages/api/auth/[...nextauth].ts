@@ -1,46 +1,48 @@
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { PrismaAdapter } from "@next-auth/prisma-adapter";
+//import GithubProvider from "next-auth/providers/github";
+//import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
 export default NextAuth({
-  adapter: PrismaAdapter(prisma),
+  // CredentialsProviderの場合 adapter は使用できない模様。
+  //adapter: PrismaAdapter(prisma),
+  theme: {
+    colorScheme: "light",
+  },
   providers: [
+    /*
+    GithubProvider({
+      clientId: process.env.GITHUB_ID ?? "",
+      clientSecret: process.env.GITHUB_SECRET ?? "",
+    }),
+    */
     CredentialsProvider({
       id: "credentials",
       name: "credentials",
       credentials: {
-        name: {
-          label: "User Name",
+        email: {
+          label: "User email",
           type: "text",
-          placeholder: "User Name",
+          placeholder: "User email",
         },
         password: { label: "Password", type: "password" },
       },
       authorize: async (credentials, req) => {
-        const postData = {
-          user_code: credentials?.name,
-          password: credentials?.password,
-        };
-
-        // APIのpostにて、ユーザーテーブルからログインユーザデータを取得してくる
-        // postSigninUserメソッドは別途定義している(axiosを使用）
-        //const res = await postSigninUser(postData);
-        const user = { id: 1, name: "next-auth-user" };
-        return user;
-        /*
-        if (res.message === "no data") {
-          return null;
-        } else {
-          const user = {
-            name: res.data[0].shimei,
-            email: res.data[0].user_code,
-          };
+        const user = await prisma.user.findFirst({
+          where: {
+            email: credentials?.email,
+            password: credentials?.password,
+          },
+        });
+        if (user) {
+          console.log(user);
           return user;
+        } else {
+          return null;
         }
-        */
       },
     }),
   ],
