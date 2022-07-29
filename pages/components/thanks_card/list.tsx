@@ -32,7 +32,7 @@ function ThanksCardList(props: Props) {
   if (!thanks_cards) return <div>Loading...</div>;
 
   return (
-    <Table size="small">
+    <Table size="small" variant="contained">
       <TableHead>
         <TableRow>
           <TableCell>id</TableCell>

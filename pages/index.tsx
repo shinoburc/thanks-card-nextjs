@@ -5,6 +5,7 @@ import styles from "../styles/Home.module.css";
 import React from "react";
 import { useSession, signIn, signOut } from "next-auth/react";
 
+import Button from "@mui/material/Button";
 import ThanksCardList from "./components/thanks_card/list";
 
 const Home: NextPage = () => {
@@ -17,22 +18,25 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <div>
-        <p>status: {status}</p>
-        {status === "authenticated" && (
-          <>
-            Signed in as {session?.user?.name} <br />
-            <button onClick={() => signOut()}>Sign out</button>
-          </>
-        )}
-        {status !== "authenticated" && (
-          <>
-            <button onClick={() => signIn()}>Sign in</button>
-          </>
-        )}
-      </div>
-
       <main className={styles.main}>
+        <div>
+          {status === "authenticated" && (
+            <>
+              Signed in as {session?.user?.name} <br />
+              <Button onClick={() => signOut()} variant="contained">
+                Sign out
+              </Button>
+            </>
+          )}
+          {status !== "authenticated" && (
+            <>
+              <Button onClick={() => signIn()} variant="contained">
+                Sign in
+              </Button>
+            </>
+          )}
+        </div>
+
         <h1 className={styles.title}> Welcome to ThanksCard </h1>
         <div>
           <ThanksCardList />
