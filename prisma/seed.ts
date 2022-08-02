@@ -2,6 +2,32 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 async function main() {
+  const dept1 = await prisma.department.upsert({
+    where: { code: 0 },
+    update: {},
+    create: {
+      name: "全体",
+      code: 0,
+    },
+  });
+  const dept2 = await prisma.department.upsert({
+    where: { code: 100 },
+    update: {},
+    create: {
+      name: "管理本部",
+      code: 100,
+      parentId: dept1.id,
+    },
+  });
+  const dept3 = await prisma.department.upsert({
+    where: { code: 200 },
+    update: {},
+    create: {
+      name: "開発本部",
+      code: 200,
+      parentId: dept1.id,
+    },
+  });
   const admin = await prisma.user.upsert({
     where: { email: "admin@ts.occ.co.jp" },
     update: {},
@@ -9,6 +35,8 @@ async function main() {
       name: "admin",
       email: "admin@ts.occ.co.jp",
       password: "admin",
+      isAdmin: true,
+      departmentId: dept2.id,
     },
   });
 
@@ -19,6 +47,8 @@ async function main() {
       name: "user",
       email: "user@ts.occ.co.jp",
       password: "user",
+      isAdmin: false,
+      departmentId: dept3.id,
     },
   });
   console.log({ admin, user });
