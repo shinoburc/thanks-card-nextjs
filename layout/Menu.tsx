@@ -1,8 +1,8 @@
-import { ReactElement } from "react";
 import React from "react";
 
+//import Link from "@mui/material/Link";
+import Link from "next/Link";
 /* List */
-import ListSubheader from "@mui/material/ListSubheader";
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
@@ -31,18 +31,22 @@ const Menu = () => {
         component="nav"
         aria-labelledby="nested-list-subheader"
       >
-        <ListItemButton>
-          <ListItemIcon>
-            <HomeIcon />
-          </ListItemIcon>
-          <ListItemText primary="Home" />
-        </ListItemButton>
-        <ListItemButton>
-          <ListItemIcon>
-            <SendIcon />
-          </ListItemIcon>
-          <ListItemText primary="Sent mail" />
-        </ListItemButton>
+        <Link href="/" passHref>
+          <ListItemButton>
+            <ListItemIcon>
+              <HomeIcon />
+            </ListItemIcon>
+            <ListItemText primary="Home" />
+          </ListItemButton>
+        </Link>
+        <Link href="/" passHref>
+          <ListItemButton>
+            <ListItemIcon>
+              <SendIcon />
+            </ListItemIcon>
+            <ListItemText primary="Sent mail" />
+          </ListItemButton>
+        </Link>
         <ListItemButton>
           <ListItemIcon>
             <DraftsIcon />
