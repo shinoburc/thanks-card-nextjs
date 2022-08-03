@@ -45,6 +45,8 @@ const UserList: NextPage = () => {
                 <TableCell>id</TableCell>
                 <TableCell>name</TableCell>
                 <TableCell>email</TableCell>
+                <TableCell></TableCell>
+                <TableCell></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -56,6 +58,16 @@ const UserList: NextPage = () => {
                     <TableCell>{user.id}</TableCell>
                     <TableCell>{user.name}</TableCell>
                     <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      <Button variant="contained" color="primary">
+                        Edit
+                      </Button>
+                    </TableCell>
+                    <TableCell>
+                      <Button variant="contained" color="warning">
+                        Delete
+                      </Button>
+                    </TableCell>
                   </TableRow>
                 );
               })}

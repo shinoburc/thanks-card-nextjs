@@ -23,14 +23,22 @@ const Home: NextPage = () => {
           {status === "authenticated" && (
             <>
               Signed in as {session?.user?.name} <br />
-              <Button onClick={() => signOut()} variant="contained">
+              <Button
+                onClick={() => signOut()}
+                variant="contained"
+                color="primary"
+              >
                 Sign out
               </Button>
             </>
           )}
           {status !== "authenticated" && (
             <>
-              <Button onClick={() => signIn()} variant="contained">
+              <Button
+                onClick={() => signIn()}
+                variant="contained"
+                color="primary"
+              >
                 Sign in
               </Button>
             </>
