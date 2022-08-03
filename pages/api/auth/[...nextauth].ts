@@ -1,3 +1,4 @@
+//const ldap = require("ldapjs");
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 //import GithubProvider from "next-auth/providers/github";
@@ -44,6 +45,44 @@ export default NextAuth({
         }
       },
     }),
+    /*
+    // LDAP Credentials
+    CredentialsProvider({
+      id: "ldap",
+      name: "LDAP",
+      credentials: {
+        name: { label: "LDAP User", type: "text", placeholder: "" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials, req) {
+        console.log(credentials);
+        // You might want to pull this call out so we're not making a new LDAP client on every login attemp
+        const client = ldap.createClient({
+          url: "ldap://ldap.es.occ.co.jp:389",
+        });
+
+        // Essentially promisify the LDAPJS client.bind function
+        return new Promise((resolve, reject) => {
+          client.bind(
+            `uid=${credentials?.name},ou=Users,dc=occ,dc=co,dc=jp`,
+            credentials?.password,
+            (error: any) => {
+              if (error) {
+                console.error("Failed");
+                reject();
+              } else {
+                console.log("Logged in");
+                resolve({
+                  email: credentials?.name + "@occ.co.jp",
+                  name: credentials?.name,
+                });
+              }
+            }
+          );
+        });
+      },
+    }),
+    */
   ],
   callbacks: {
     async jwt({ token, user, account }) {
