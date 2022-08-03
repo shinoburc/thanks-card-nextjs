@@ -72,6 +72,7 @@ export default NextAuth({
                 reject();
               } else {
                 console.log("Logged in");
+                // Add user if user is not exist in DB.
                 resolve({
                   email: credentials?.name + "@occ.co.jp",
                   name: credentials?.name,
@@ -86,6 +87,7 @@ export default NextAuth({
   ],
   callbacks: {
     async jwt({ token, user, account }) {
+      console.log(token);
       // 最初のサインイン
       if (account && user) {
         return {
