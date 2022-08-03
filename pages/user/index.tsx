@@ -38,6 +38,9 @@ const UserList: NextPage = () => {
 
       <main className={styles.main}>
         <h1 className={styles.title}> User List</h1>
+        <Button variant="contained" color="primary" href="/user/create">
+          Create User
+        </Button>
         <div>
           <Table size="small">
             <TableHead>
