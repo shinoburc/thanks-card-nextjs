@@ -1,7 +1,7 @@
 import React from "react";
 
 //import Link from "@mui/material/Link";
-import Link from "next/Link";
+import Link from "next/link";
 /* List */
 import List from "@mui/material/List";
 import ListItemButton from "@mui/material/ListItemButton";
