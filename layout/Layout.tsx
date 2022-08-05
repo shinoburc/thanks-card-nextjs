@@ -8,6 +8,7 @@ import Button from "@mui/material/Button";
 
 import { useSession, signIn, signOut } from "next-auth/react";
 
+import AccountInfo from "../layout/AccountInfo";
 import Menu from "../layout/Menu";
 import PersonIcon from "@mui/icons-material/Person";
 
@@ -32,33 +33,7 @@ export const Layout = ({ children }: LayoutProps) => {
       </header>
 
       <div>
-        {status === "authenticated" && (
-          <>
-            <PersonIcon />
-            Signed in as {session?.user?.name} <br />
-            <Button
-              onClick={() => signOut()}
-              variant="contained"
-              color="primary"
-            >
-              Sign out
-            </Button>
-          </>
-        )}
-        {status !== "authenticated" && (
-          <>
-            <Button
-              onClick={() => signIn()}
-              variant="contained"
-              color="primary"
-            >
-              Sign in
-            </Button>
-          </>
-        )}
-      </div>
-
-      <div>
+        <AccountInfo />
         <Menu />
         <main className={styles.main}>{children}</main>
       </div>
