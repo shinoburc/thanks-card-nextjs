@@ -1,4 +1,5 @@
 import type { NextPage } from "next";
+import Link from "next/link";
 import React from "react";
 
 import Button from "@mui/material/Button";
@@ -32,9 +33,11 @@ const UserList: NextPage = () => {
 
   return (
     <>
-      <Button variant="contained" color="primary" href="/user/create">
-        <PersonAddIcon /> Create User
-      </Button>
+      <Link href="/user/create" passHref>
+        <Button variant="contained" color="primary">
+          <PersonAddIcon /> Create User
+        </Button>
+      </Link>
       <div>
         <Table size="small">
           <TableHead>
@@ -56,14 +59,18 @@ const UserList: NextPage = () => {
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
                   <TableCell>
-                    <Button variant="contained" color="primary">
-                      Edit
-                    </Button>
+                    <Link href="/user/edit" passHref>
+                      <Button variant="contained" color="primary">
+                        Edit
+                      </Button>
+                    </Link>
                   </TableCell>
                   <TableCell>
-                    <Button variant="contained" color="warning">
-                      Delete
-                    </Button>
+                    <Link href="/user/delete" passHref>
+                      <Button variant="contained" color="warning">
+                        Delete
+                      </Button>
+                    </Link>
                   </TableCell>
                 </TableRow>
               );

@@ -87,7 +87,6 @@ export default NextAuth({
   ],
   callbacks: {
     async jwt({ token, user, account }) {
-      console.log(token);
       // 最初のサインイン
       if (account && user) {
         return {
