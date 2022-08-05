@@ -7,11 +7,11 @@ import { Layout } from "../layout/Layout";
 //function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
 function MyApp({ Component, pageProps }: AppProps) {
   return (
-    <Layout>
-      <SessionProvider session={pageProps.session}>
+    <SessionProvider session={pageProps.session}>
+      <Layout>
         <Component {...pageProps} />
-      </SessionProvider>
-    </Layout>
+      </Layout>
+    </SessionProvider>
   );
 }
 
