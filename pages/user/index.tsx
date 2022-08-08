@@ -23,6 +23,7 @@ const UserList: NextPage = () => {
   type UserPayload = Prisma.UserGetPayload<{
     include: {
       role: true;
+      department: true;
     };
   }>;
   /* SWR を使用して /api/user からデータを取得し、 users 配列で受け取る */
@@ -45,6 +46,8 @@ const UserList: NextPage = () => {
               <TableCell>id</TableCell>
               <TableCell>name</TableCell>
               <TableCell>email</TableCell>
+              <TableCell>role</TableCell>
+              <TableCell>department</TableCell>
               <TableCell></TableCell>
               <TableCell></TableCell>
             </TableRow>
@@ -58,6 +61,8 @@ const UserList: NextPage = () => {
                   <TableCell>{user.id}</TableCell>
                   <TableCell>{user.name}</TableCell>
                   <TableCell>{user.email}</TableCell>
+                  <TableCell>{user.role.name}</TableCell>
+                  <TableCell>{user.department.name}</TableCell>
                   <TableCell>
                     <Link href="/user/edit" passHref>
                       <Button variant="contained" color="primary">

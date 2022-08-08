@@ -2,6 +2,9 @@ import type { NextPage } from "next";
 import React from "react";
 import { useForm } from "react-hook-form";
 
+import useSWR from "swr";
+import { Prisma } from "@prisma/client";
+
 import Button from "@mui/material/Button";
 
 type FormData = {
@@ -19,42 +22,88 @@ const UserCreate: NextPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
-  const onSubmit = handleSubmit((formData) => console.log(formData));
+  const onSubmit = handleSubmit(async (formData) => {
+    const response = await fetch("/api/user", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    });
+    const responseJSON = await response.json();
+    console.log(responseJSON);
+  });
+
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  const { data: roles, error: role_error } = useSWR<Prisma.RoleCreateInput[]>(
+    "/api/role",
+    fetcher
+  );
+  const { data: departments, error: department_error } = useSWR<
+    Prisma.DepartmentCreateInput[]
+  >("/api/department", fetcher);
+
+  type UserPayload = Prisma.UserGetPayload<{
+    include: {
+      role: true;
+    };
+  }>;
 
   return (
-    <form>
-      {/*
-      <form onSubmit={onSubmit}>
-      */}
-      <label>name</label>
-      <input {...register("name", { required: true, maxLength: 40 })} />
-      {errors.name && <p>name is required</p>}
-      <label>email</label>
-      <input {...register("email", { required: true, maxLength: 60 })} />
-      {errors.email && <p>email is required</p>}
-      <label>password</label>
-      <input
-        {...register("password", { required: true, maxLength: 8 })}
-        type="password"
-      />
-      {errors.password && <p>password is required</p>}
-      <label>role</label>
-      <input {...register("roleId")} />
-      <label>department</label>
-      <input {...register("departmentId")} />
-      {/*
-      <button
-        type="button"
-        onClick={() => {
-          setValue("lastName", "MIYAZATO");
-          setValue("firstName", "Shinobu");
-        }}
-      >
-        SetValue
-      </button>
-      <input type="submit" value="Submit" />
-      */}
-      <Button onClick={onSubmit} variant="contained" color="primary">
+    <form onSubmit={onSubmit}>
+      <div>
+        <label>name</label>
+        <input {...register("name", { required: true, maxLength: 40 })} />
+        {errors.name && <p>name is required</p>}
+      </div>
+      <div>
+        <label>email</label>
+        <input {...register("email", { required: true, maxLength: 60 })} />
+        {errors.email && <p>email is required</p>}
+      </div>
+      <div>
+        <label>password</label>
+        <input
+          {...register("password", { required: true, maxLength: 8 })}
+          type="password"
+        />
+        {errors.password && <p>password is required</p>}
+      </div>
+      <div>
+        <label>role</label>
+        <select {...register("roleId")}>
+          {roles?.map((role) => {
+            return (
+              <option key={role.id} value={role.id}>
+                {role.name}
+              </option>
+            );
+          })}
+        </select>
+      </div>
+      <div>
+        <label>department</label>
+        <select {...register("departmentId")}>
+          {departments?.map((department) => {
+            return (
+              <option key={department.id} value={department.id}>
+                {department.name}
+              </option>
+            );
+          })}
+        </select>
+        {/*
+        <button
+          type="button"
+          onClick={() => {
+            setValue("lastName", "MIYAZATO");
+            setValue("firstName", "Shinobu");
+          }}
+        >
+          SetValue
+        </button>
+        <input type="submit" value="Submit" />
+        */}
+      </div>
+      <Button type="submit" variant="contained" color="primary">
         Submit
       </Button>
     </form>
