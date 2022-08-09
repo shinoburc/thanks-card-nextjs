@@ -8,7 +8,6 @@ import { Prisma } from "@prisma/client";
 
 import Button from "@mui/material/Button";
 
-
 type FormData = {
   name: string;
   email: string;
