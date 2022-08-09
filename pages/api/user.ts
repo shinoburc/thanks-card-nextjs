@@ -27,6 +27,10 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<User[]>) => {
 const handlePost = async (req: NextApiRequest, res: NextApiResponse<User>) => {
   //const user: User = req.body;
   //const createdUser = await prisma.user.create({ data: user });
+
+  /*
+  // スプレッド構文を使用しない場合。
+  // (補足)プロパティ名と変数名が一致しているため、プロパティ名は省略できる。
   const { name, email, password, roleId, departmentId } = req.body;
   const createdUser = await prisma.user.create({
     data: {
@@ -35,6 +39,14 @@ const handlePost = async (req: NextApiRequest, res: NextApiResponse<User>) => {
       password: password,
       roleId: roleId,
       departmentId: departmentId,
+    },
+  });
+  */
+
+  // スプレッド構文を使用する場合
+  const createdUser = await prisma.user.create({
+    data: {
+      ...req.body,
     },
   });
   res.status(200).json(createdUser);
