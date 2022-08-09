@@ -1,4 +1,5 @@
 import type { NextPage } from "next";
+import { useRouter } from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
 
@@ -6,6 +7,7 @@ import useSWR from "swr";
 import { Prisma } from "@prisma/client";
 
 import Button from "@mui/material/Button";
+
 
 type FormData = {
   name: string;
@@ -16,6 +18,8 @@ type FormData = {
 };
 
 const UserCreate: NextPage = () => {
+  const router = useRouter();
+
   const {
     register,
     //setValue,
@@ -29,7 +33,9 @@ const UserCreate: NextPage = () => {
       body: JSON.stringify(formData),
     });
     const responseJSON = await response.json();
+    // TODO: 成功時・失敗時にの判定
     console.log(responseJSON);
+    router.push("/user/");
   });
 
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
