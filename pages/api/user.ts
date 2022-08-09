@@ -3,7 +3,7 @@ import type { NextApiRequest, NextApiResponse } from "next";
 //import { PrismaClient, User } from "@prisma/client";
 //const prisma = new PrismaClient();
 import { User } from "@prisma/client";
-import { prisma } from "../prismaSingleton";
+import { prisma } from "@/utils/prismaSingleton";
 
 export default async function handler(
   req: NextApiRequest,
