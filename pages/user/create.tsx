@@ -25,6 +25,7 @@ const UserCreate: NextPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>();
+
   const onSubmit = handleSubmit(async (formData) => {
     const response = await fetch("/api/user", {
       method: "POST",
@@ -45,12 +46,6 @@ const UserCreate: NextPage = () => {
   const { data: departments, error: department_error } = useSWR<
     Prisma.DepartmentCreateInput[]
   >("/api/department", fetcher);
-
-  type UserPayload = Prisma.UserGetPayload<{
-    include: {
-      role: true;
-    };
-  }>;
 
   return (
     <form onSubmit={onSubmit}>
