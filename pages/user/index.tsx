@@ -4,7 +4,7 @@ import React from "react";
 
 import Button from "@mui/material/Button";
 
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { Prisma } from "@prisma/client";
 
 /* ライブラリ Material-UI が提供するコンポーネントの import */
@@ -28,6 +28,14 @@ const UserList: NextPage = () => {
   }>;
   /* SWR を使用して /api/user からデータを取得し、 users 配列で受け取る */
   const { data: users, error } = useSWR<UserPayload[]>("/api/user", fetcher);
+
+  const onDelete = async (id: string) => {
+    const response = await fetch(`/api/user/${id}`, {
+      method: "DELETE",
+    });
+    // ユーザ一覧の更新
+    mutate("/api/user");
+  };
 
   if (error) return <div>An error has occurred.</div>;
   if (!users) return <div>Loading...</div>;
@@ -71,11 +79,13 @@ const UserList: NextPage = () => {
                     </Link>
                   </TableCell>
                   <TableCell>
-                    <Link href="/user/delete" passHref>
-                      <Button variant="contained" color="warning">
-                        Delete
-                      </Button>
-                    </Link>
+                    <Button
+                      onClick={() => onDelete(user.id)}
+                      variant="contained"
+                      color="warning"
+                    >
+                      Delete
+                    </Button>
                   </TableCell>
                 </TableRow>
               );
