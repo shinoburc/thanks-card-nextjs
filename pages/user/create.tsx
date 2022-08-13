@@ -69,7 +69,7 @@ const UserCreate: NextPage = () => {
       </div>
       <div>
         <label>role</label>
-        <select {...register("roleId")}>
+        <select {...register("roleId")} defaultValue={roles ? roles[0].id : undefined}>
           {roles?.map((role) => {
             return (
               <option key={role.id} value={role.id}>
@@ -81,7 +81,7 @@ const UserCreate: NextPage = () => {
       </div>
       <div>
         <label>department</label>
-        <select {...register("departmentId")}>
+        <select {...register("departmentId")} defaultValue={departments ? departments[0].id : undefined}>
           {departments?.map((department) => {
             return (
               <option key={department.id} value={department.id}>
