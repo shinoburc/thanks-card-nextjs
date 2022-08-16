@@ -32,10 +32,13 @@ const UserCreate: NextPage = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     });
-    const responseJSON = await response.json();
-    // TODO: 成功時・失敗時にの判定
-    console.log(responseJSON);
-    router.push("/user/");
+    if (response.status === 200) {
+      const responseJSON = await response.json();
+      router.push("/user/");
+    } else {
+      // TODO: display error message
+      console.log("error");
+    }
   });
 
   const fetcher = (url: string) => fetch(url).then((res) => res.json());
