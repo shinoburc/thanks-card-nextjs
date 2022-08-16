@@ -52,10 +52,13 @@ const UserEdit: NextPage = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     });
-    const responseJSON = await response.json();
-    // TODO: 成功時・失敗時の判定
-    console.log(responseJSON);
-    router.push({ pathname: "/user/" });
+    if (response.status === 200) {
+      const responseJSON = await response.json();
+      router.push({ pathname: "/user/" });
+    } else {
+      // TODO: display error message
+      console.log("error");
+    }
 
     // SWR のキャッシュを手動で更新する場合
     // reference: https://swr.vercel.app/ja/docs/mutation

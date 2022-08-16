@@ -1,5 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import { User } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import { prisma } from "@/utils/prismaSingleton";
 
 export default async function handler(
@@ -17,7 +17,7 @@ export default async function handler(
 
 const handleGet = async (req: NextApiRequest, res: NextApiResponse<User>) => {
   const id = req.query.id as string;
-  const targetUser = await prisma.user.findFirst({
+  const targetUser = await prisma.user.findUnique({
     where: {
       id: id,
     },
@@ -25,21 +25,27 @@ const handleGet = async (req: NextApiRequest, res: NextApiResponse<User>) => {
   if (targetUser) {
     res.status(200).json(targetUser);
   } else {
-    res.status(404);
+    res.status(404).end();
   }
 };
 
 const handlePut = async (req: NextApiRequest, res: NextApiResponse<User>) => {
   const id = req.query.id as string;
-  const updatedUser = await prisma.user.update({
-    where: {
-      id: id,
-    },
-    data: {
-      ...req.body,
-    },
-  });
-  res.status(200).json(updatedUser);
+
+  try {
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: id,
+      },
+      data: {
+        ...req.body,
+      },
+    });
+    res.status(200).json(updatedUser);
+  } catch (e) {
+    //if (e instanceof Prisma.PrismaClientKnownRequestError) {
+    res.status(500).end();
+  }
 };
 
 const handleDelete = async (
