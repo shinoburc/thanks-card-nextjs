@@ -72,7 +72,7 @@ const UserList: NextPage = () => {
                   <TableCell>{user.role.name}</TableCell>
                   <TableCell>{user.department.name}</TableCell>
                   <TableCell>
-                    <Link href="/user/edit" passHref>
+                    <Link href={`/user/edit/${user.id}`} passHref>
                       <Button variant="contained" color="primary">
                         Edit
                       </Button>

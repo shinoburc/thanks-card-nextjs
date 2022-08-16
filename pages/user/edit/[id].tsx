@@ -3,42 +3,86 @@ import { useRouter } from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
 
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import { Prisma } from "@prisma/client";
 
 import Button from "@mui/material/Button";
 
 type FormData = {
-  name: string;
-  email: string;
-  password: string;
-  roleId: string;
-  departmentId: string;
+  name: string | null;
+  email: string | null;
+  password: string | null;
+  roleId: string | null;
+  departmentId: string | null;
 };
 
-const UserCreate: NextPage = () => {
+const UserEdit: NextPage = () => {
   const router = useRouter();
+  const { id } = router.query;
+
+  type UserPayload = Prisma.UserGetPayload<{}>;
+
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
+  const { data: targetUser, error: user_error } = useSWR<UserPayload>(
+    `/api/user/${id}`,
+    fetcher
+  );
 
   const {
     register,
-    //setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
+    reset,
+  } = useForm<FormData>({
+    /*
+    defaultValues: {
+      ...targetUser,
+    },
+    */
+  });
+
+  /* targetUser を取得完了したタイミングでフォームに targetUser のプロパティをセットする */
+  React.useEffect(() => {
+    reset({ ...targetUser });
+  }, [reset, targetUser]);
 
   const onSubmit = handleSubmit(async (formData) => {
-    const response = await fetch("/api/user", {
-      method: "POST",
+    const response = await fetch(`/api/user/${id}`, {
+      method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     });
     const responseJSON = await response.json();
-    // TODO: 成功時・失敗時にの判定
+    // TODO: 成功時・失敗時の判定
     console.log(responseJSON);
-    router.push("/user/");
+    router.push({ pathname: "/user/" });
+
+    // SWR のキャッシュを手動で更新する場合
+    // reference: https://swr.vercel.app/ja/docs/mutation
+    /*
+    mutate(
+      "/api/user",
+      async (users: UserPayload[]) => {
+        const response = await fetch(`/api/user/${id}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        });
+        // TODO: 成功時・失敗時の判定
+        const updatedUser = await response.json();
+        // リストをフィルタリングし、更新されたアイテムを返します
+        const filteredUsers = users.filter(
+          (user) => user.id !== updatedUser.id
+        );
+        return [...filteredUsers, updatedUser];
+        // API からすでに更新後の情報が取得できるため
+        // 再検証する必要はありません
+      },
+      { revalidate: false }
+    );
+    */
   });
 
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data: roles, error: role_error } = useSWR<Prisma.RoleCreateInput[]>(
     "/api/role",
     fetcher
@@ -116,4 +160,4 @@ const UserCreate: NextPage = () => {
   );
 };
 
-export default UserCreate;
+export default UserEdit;
