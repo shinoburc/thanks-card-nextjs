@@ -17,8 +17,9 @@ import TableRow from "@mui/material/TableRow";
 /* icons */
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 
+import { fetcher } from "@/utils/fetcher";
+
 const UserList: NextPage = () => {
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
   /* User の外部キー(role)も含んだ型を定義している */
   type UserPayload = Prisma.UserGetPayload<{
     include: {

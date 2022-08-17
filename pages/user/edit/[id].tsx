@@ -8,6 +8,8 @@ import { Prisma } from "@prisma/client";
 
 import Button from "@mui/material/Button";
 
+import { fetcher } from "@/utils/fetcher";
+
 type FormData = {
   name: string | null;
   email: string | null;
@@ -17,12 +19,13 @@ type FormData = {
 };
 
 const UserEdit: NextPage = () => {
+  // Dynamic Routes の仕組み([id].tsx)で URL から User の id を取得する
+  // reference: https://nextjs.org/docs/routing/dynamic-routes
   const router = useRouter();
   const { id } = router.query;
 
   type UserPayload = Prisma.UserGetPayload<{}>;
 
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data: targetUser, error: user_error } = useSWR<UserPayload>(
     `/api/user/${id}`,
     fetcher

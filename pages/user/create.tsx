@@ -8,6 +8,8 @@ import { Prisma } from "@prisma/client";
 
 import Button from "@mui/material/Button";
 
+import { fetcher } from "@/utils/fetcher";
+
 type FormData = {
   name: string;
   email: string;
@@ -41,7 +43,6 @@ const UserCreate: NextPage = () => {
     }
   });
 
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
   const { data: roles, error: role_error } = useSWR<Prisma.RoleCreateInput[]>(
     "/api/role",
     fetcher

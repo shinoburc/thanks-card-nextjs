@@ -9,12 +9,13 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 
+import { fetcher } from "@/utils/fetcher";
+
 type Props = {
   children?: ReactNode;
 };
 
 function ThanksCardList(props: Props) {
-  const fetcher = (url: string) => fetch(url).then((res) => res.json());
   /* ThanksCard の外部キー(From, To)も含んだ型を定義している */
   type ThanksCardPayload = Prisma.ThanksCardGetPayload<{
     include: {
