@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import useSWR, { mutate } from "swr";
 import { Prisma } from "@prisma/client";
@@ -10,13 +11,7 @@ import Button from "@mui/material/Button";
 
 import { fetcher } from "@/utils/fetcher";
 
-type FormData = {
-  name: string | null;
-  email: string | null;
-  password: string | null;
-  roleId: string | null;
-  departmentId: string | null;
-};
+import { userFormSchema, UserFormData } from "../../../formSchema/user";
 
 const UserEdit: NextPage = () => {
   // Dynamic Routes の仕組み([id].tsx)で URL から User の id を取得する
@@ -36,13 +31,7 @@ const UserEdit: NextPage = () => {
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<FormData>({
-    /*
-    defaultValues: {
-      ...targetUser,
-    },
-    */
-  });
+  } = useForm<UserFormData>({ resolver: yupResolver(userFormSchema) });
 
   /* targetUser を取得完了したタイミングでフォームに targetUser のプロパティをセットする */
   React.useEffect(() => {

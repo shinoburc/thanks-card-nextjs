@@ -2,6 +2,7 @@ import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import React from "react";
 import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import useSWR from "swr";
 import { Prisma } from "@prisma/client";
@@ -9,14 +10,7 @@ import { Prisma } from "@prisma/client";
 import Button from "@mui/material/Button";
 
 import { fetcher } from "@/utils/fetcher";
-
-type FormData = {
-  name: string;
-  email: string;
-  password: string;
-  roleId: string;
-  departmentId: string;
-};
+import { userFormSchema, UserFormData } from "../../formSchema/user";
 
 const UserCreate: NextPage = () => {
   const router = useRouter();
@@ -26,7 +20,9 @@ const UserCreate: NextPage = () => {
     //setValue,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>();
+  } = useForm<UserFormData>({
+    resolver: yupResolver(userFormSchema),
+  });
 
   const onSubmit = handleSubmit(async (formData) => {
     const response = await fetch("/api/user", {
@@ -55,26 +51,23 @@ const UserCreate: NextPage = () => {
     <form onSubmit={onSubmit}>
       <div>
         <label>name</label>
-        <input {...register("name", { required: true, maxLength: 40 })} />
-        {errors.name && <p>name is required</p>}
+        <input {...register("name")} />
+        <p className="error">{errors.name?.message}</p>
       </div>
       <div>
         <label>email</label>
-        <input {...register("email", { required: true, maxLength: 60 })} />
-        {errors.email && <p>email is required</p>}
+        <input {...register("email")} />
+        <p className="error">{errors.email?.message}</p>
       </div>
       <div>
         <label>password</label>
-        <input
-          {...register("password", { required: true, maxLength: 8 })}
-          type="password"
-        />
-        {errors.password && <p>password is required</p>}
+        <input {...register("password")} type="password" />
+        <p className="error">{errors.password?.message}</p>
       </div>
       <div>
         <label>role</label>
         <select
-          {...register("roleId", { required: true })}
+          {...register("roleId")}
           defaultValue={roles ? roles[0].id : undefined}
         >
           {roles?.map((role) => {
@@ -85,11 +78,12 @@ const UserCreate: NextPage = () => {
             );
           })}
         </select>
+        <p className="error">{errors.roleId?.message}</p>
       </div>
       <div>
         <label>department</label>
         <select
-          {...register("departmentId", { required: true })}
+          {...register("departmentId")}
           defaultValue={departments ? departments[0].id : undefined}
         >
           {departments?.map((department) => {
@@ -100,6 +94,7 @@ const UserCreate: NextPage = () => {
             );
           })}
         </select>
+        <p className="error">{errors.departmentId?.message}</p>
         {/*
         <button
           type="button"

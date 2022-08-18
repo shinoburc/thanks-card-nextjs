@@ -25,3 +25,7 @@ a {
     background: #fff;
     text-align: center;
 }
+
+.error {
+    color: #f00;
+}

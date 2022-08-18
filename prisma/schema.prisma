@@ -45,7 +45,10 @@ model Session {
 model User {
   id            String    @id @default(cuid())
   name          String?
-  email         String?   @unique
+  // next-auth のドキュメントでは email をオプショナルにしているが、必須に変更している
+  // name か email どちらかがセットされていれば良い仕様の場合は元に戻す
+  // reference: https://next-auth.js.org/adapters/prisma
+  email         String   @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
