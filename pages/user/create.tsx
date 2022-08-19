@@ -7,6 +7,13 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import useSWR from "swr";
 import { Prisma } from "@prisma/client";
 
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Input from "@mui/material/Input";
+import TextField from "@mui/material/TextField";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import FormHelperText from "@mui/material/FormHelperText";
 import Button from "@mui/material/Button";
 
 import { fetcher } from "@/utils/fetcher";
@@ -49,23 +56,60 @@ const UserCreate: NextPage = () => {
 
   return (
     <form onSubmit={onSubmit}>
-      <div>
-        <label>name</label>
-        <input {...register("name")} />
-        <p className="error">{errors.name?.message}</p>
-      </div>
-      <div>
-        <label>email</label>
-        <input {...register("email")} />
-        <p className="error">{errors.email?.message}</p>
-      </div>
-      <div>
-        <label>password</label>
-        <input {...register("password")} type="password" />
-        <p className="error">{errors.password?.message}</p>
-      </div>
-      <div>
-        <label>role</label>
+      <FormControl fullWidth>
+        <TextField
+          label="Name"
+          variant="standard"
+          error={"name" in errors}
+          helperText={errors.name?.message}
+          {...register("name")}
+        />
+      </FormControl>
+      {/*
+        <label>name: </label>
+        <Input {...register("name")} />
+      */}
+      <FormControl fullWidth>
+        <TextField
+          label="Email"
+          variant="standard"
+          required
+          error={"email" in errors}
+          helperText={errors.email?.message}
+          {...register("email")}
+        />
+      </FormControl>
+      <FormControl fullWidth>
+        <TextField
+          label="Password"
+          variant="standard"
+          type="password"
+          required
+          error={"password" in errors}
+          helperText={errors.password?.message}
+          {...register("password")}
+        />
+      </FormControl>
+      <FormControl fullWidth>
+        <InputLabel>Role</InputLabel>
+        <Select
+          label="role"
+          required
+          error={"roleId" in errors}
+          {...register("roleId")}
+        >
+          {roles?.map((role) => {
+            return (
+              <MenuItem key={role.id} value={role.id}>
+                {role.name}
+              </MenuItem>
+            );
+          })}
+        </Select>
+        <FormHelperText error={true}>{errors.roleId?.message}</FormHelperText>
+      </FormControl>
+      {/*
+        <label>role: </label>
         <select
           {...register("roleId")}
           defaultValue={roles ? roles[0].id : undefined}
@@ -78,24 +122,28 @@ const UserCreate: NextPage = () => {
             );
           })}
         </select>
-        <p className="error">{errors.roleId?.message}</p>
-      </div>
-      <div>
-        <label>department</label>
-        <select
+        */}
+      <FormControl fullWidth>
+        <InputLabel>Department</InputLabel>
+        <Select
+          label="department"
+          required
+          error={"departmentId" in errors}
           {...register("departmentId")}
-          defaultValue={departments ? departments[0].id : undefined}
         >
           {departments?.map((department) => {
             return (
-              <option key={department.id} value={department.id}>
+              <MenuItem key={department.id} value={department.id}>
                 {department.name}
-              </option>
+              </MenuItem>
             );
           })}
-        </select>
-        <p className="error">{errors.departmentId?.message}</p>
-        {/*
+        </Select>
+        <FormHelperText error={true}>
+          {errors.departmentId?.message}
+        </FormHelperText>
+      </FormControl>
+      {/*
         <button
           type="button"
           onClick={() => {
@@ -106,8 +154,7 @@ const UserCreate: NextPage = () => {
           SetValue
         </button>
         <input type="submit" value="Submit" />
-        */}
-      </div>
+      */}
       <Button type="submit" variant="contained" color="primary">
         Submit
       </Button>
