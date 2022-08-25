@@ -9,7 +9,6 @@ import { Prisma } from "@prisma/client";
 
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
-import Input from "@mui/material/Input";
 import TextField from "@mui/material/TextField";
 import Select from "@mui/material/Select";
 import MenuItem from "@mui/material/MenuItem";
@@ -37,7 +36,7 @@ const UserCreate: NextPage = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     });
-    if (response.status === 200) {
+    if (response.ok) {
       const responseJSON = await response.json();
       router.push("/user/");
     } else {

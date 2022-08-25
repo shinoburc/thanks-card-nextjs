@@ -16,7 +16,6 @@ import FormHelperText from "@mui/material/FormHelperText";
 import Button from "@mui/material/Button";
 
 import { fetcher } from "@/utils/fetcher";
-
 import { userFormSchema, UserFormData } from "../../../formSchema/user";
 
 const UserEdit: NextPage = () => {
@@ -26,12 +25,16 @@ const UserEdit: NextPage = () => {
   const { id } = router.query;
 
   type UserPayload = Prisma.UserGetPayload<{}>;
-
-  const { data: targetUser, error: user_error } = useSWR<UserPayload>(
+  const { data: targetUser, error: targetUserFetchError } = useSWR<UserPayload>(
     `/api/user/${id}`,
     fetcher
+    // suspense: true にすることで useForm 時に targetUser が取得済みであることを保証することができる。
+    // 実装時段階において experimental feature (実験的機能) であるため使用していない。
+    // reference: https://swr.vercel.app/docs/suspense
+    // { suspense: true }
   );
 
+  const [postError, setPostError] = React.useState<string>();
   const {
     register,
     handleSubmit,
@@ -39,14 +42,29 @@ const UserEdit: NextPage = () => {
     reset,
   } = useForm<UserFormData>({
     resolver: yupResolver(userFormSchema),
-    defaultValues: {
-      ...targetUser,
-    },
+    // 例えば useSWR の suspense: true を設定し targetUser が既に取得済みの場合、
+    // ここでフォームの初期値をセットすることができる。
+    /*
+    defaultValues: targetUser,
+    */
   });
+
+  const { data: roles, error: rolesFetchError } = useSWR<
+    Prisma.RoleCreateInput[]
+  >("/api/role", fetcher);
+
+  const { data: departments, error: departmentsFetchError } = useSWR<
+    Prisma.DepartmentCreateInput[]
+  >("/api/department", fetcher);
 
   /* targetUser を取得完了したタイミングでフォームに targetUser のプロパティをセットする */
   React.useEffect(() => {
-    //reset({ ...targetUser });
+    reset(targetUser);
+    /*
+    reset({
+      ...targetUser,
+    });
+    */
   }, [reset, targetUser]);
 
   const onSubmit = handleSubmit(async (formData) => {
@@ -55,12 +73,14 @@ const UserEdit: NextPage = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
     });
-    if (response.status === 200) {
-      const responseJSON = await response.json();
+    if (response.ok) {
+      // const responseJSON = await response.json();
+      // mutate で useSWR のキャッシュを更新する
+      mutate(`/api/user/${id}`);
       router.push({ pathname: "/user/" });
     } else {
       // TODO: display error message
-      console.log("error");
+      setPostError("server error");
     }
 
     // SWR のキャッシュを手動で更新する場合
@@ -89,119 +109,116 @@ const UserEdit: NextPage = () => {
     */
   });
 
-  const { data: roles, error: role_error } = useSWR<Prisma.RoleCreateInput[]>(
-    "/api/role",
-    fetcher
-  );
-  const { data: departments, error: department_error } = useSWR<
-    Prisma.DepartmentCreateInput[]
-  >("/api/department", fetcher);
+  if (targetUserFetchError || rolesFetchError || departmentsFetchError)
+    return <div>failed to load</div>;
+  if (!targetUser) return <div>loading...</div>;
 
   return (
-    <form onSubmit={onSubmit}>
-      <FormControl fullWidth>
-        <TextField
-          label="Name"
-          variant="standard"
-          error={"name" in errors}
-          helperText={errors.name?.message}
-          {...register("name")}
-        />
-      </FormControl>
-      {/*
-        <label>name: </label>
-        <Input {...register("name")} />
-      */}
-      <FormControl fullWidth>
-        <TextField
-          label="Email"
-          variant="standard"
-          required
-          error={"email" in errors}
-          helperText={errors.email?.message}
-          {...register("email")}
-        />
-      </FormControl>
-      <FormControl fullWidth>
-        <TextField
-          label="Password"
-          variant="standard"
-          type="password"
-          required
-          error={"password" in errors}
-          helperText={errors.password?.message}
-          {...register("password")}
-        />
-      </FormControl>
-      <FormControl fullWidth>
-        <InputLabel>Role</InputLabel>
-        <Select
-          label="role"
-          required
-          error={"roleId" in errors}
-          {...register("roleId")}
-        >
-          {roles?.map((role) => {
-            return (
+    <>
+      <span className="error">{postError}</span>
+      <form onSubmit={onSubmit}>
+        <FormControl fullWidth>
+          <TextField
+            label="Name"
+            variant="standard"
+            error={"name" in errors}
+            helperText={errors.name?.message}
+            {...register("name")}
+          />
+        </FormControl>
+        {/*
+          <label>name: </label>
+          <Input {...register("name")} />
+        */}
+        <FormControl fullWidth>
+          <TextField
+            label="Email"
+            variant="standard"
+            required
+            error={"email" in errors}
+            helperText={errors.email?.message}
+            {...register("email")}
+          />
+        </FormControl>
+        <FormControl fullWidth>
+          <TextField
+            label="Password"
+            variant="standard"
+            type="password"
+            required
+            error={"password" in errors}
+            helperText={errors.password?.message}
+            {...register("password")}
+          />
+        </FormControl>
+        <FormControl fullWidth>
+          <InputLabel>Role</InputLabel>
+          <Select
+            label="role"
+            required
+            error={"roleId" in errors}
+            defaultValue={targetUser?.roleId}
+            {...register("roleId")}
+          >
+            {roles?.map((role) => (
               <MenuItem key={role.id} value={role.id}>
                 {role.name}
               </MenuItem>
-            );
-          })}
-        </Select>
-        <FormHelperText error={true}>{errors.roleId?.message}</FormHelperText>
-      </FormControl>
-      {/*
-        <label>role: </label>
-        <select
-          {...register("roleId")}
-          defaultValue={roles ? roles[0].id : undefined}
-        >
-          {roles?.map((role) => {
-            return (
-              <option key={role.id} value={role.id}>
-                {role.name}
-              </option>
-            );
-          })}
-        </select>
-        */}
-      <FormControl fullWidth>
-        <InputLabel>Department</InputLabel>
-        <Select
-          label="department"
-          required
-          error={"departmentId" in errors}
-          {...register("departmentId")}
-        >
-          {departments?.map((department) => {
-            return (
+            ))}
+          </Select>
+          <FormHelperText error={true}>{errors.roleId?.message}</FormHelperText>
+        </FormControl>
+        {/*
+          <label>role: </label>
+          <select
+            {...register("roleId")}
+            defaultValue={roles ? roles[0].id : undefined}
+          >
+            {roles?.map((role) => {
+              return (
+                <option key={role.id} value={role.id}>
+                  {role.name}
+                </option>
+              );
+            })}
+          </select>
+          */}
+        <FormControl fullWidth>
+          <InputLabel>Department</InputLabel>
+          <Select
+            label="department"
+            required
+            error={"departmentId" in errors}
+            defaultValue={targetUser?.departmentId}
+            {...register("departmentId")}
+          >
+            {departments?.map((department) => (
               <MenuItem key={department.id} value={department.id}>
                 {department.name}
               </MenuItem>
-            );
-          })}
-        </Select>
-        <FormHelperText error={true}>
-          {errors.departmentId?.message}
-        </FormHelperText>
-      </FormControl>
-      {/*
-        <button
-          type="button"
-          onClick={() => {
-            setValue("lastName", "MIYAZATO");
-            setValue("firstName", "Shinobu");
-          }}
-        >
-          SetValue
-        </button>
-        <input type="submit" value="Submit" />
-      */}
-      <Button type="submit" variant="contained" color="primary">
-        Submit
-      </Button>
-    </form>
+            ))}
+          </Select>
+          <FormHelperText error={true}>
+            {errors.departmentId?.message}
+          </FormHelperText>
+        </FormControl>
+        {/*
+          <button
+            type="button"
+            onClick={() => {
+              setValue("lastName", "MIYAZATO");
+              setValue("firstName", "Shinobu");
+            }}
+          >
+            SetValue
+          </button>
+          <input type="submit" value="Submit" />
+        */}
+        <Button type="submit" variant="contained" color="primary">
+          Submit
+        </Button>
+      </form>
+    </>
   );
 };
 
