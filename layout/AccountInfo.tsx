@@ -11,18 +11,20 @@ const AccountInfo = () => {
       {status === "authenticated" && (
         <>
           <PersonIcon />
-          Signed in as {session?.user?.name} <br />
-          <Button onClick={() => signOut()} variant="contained" color="primary">
+          <span>Signed in as {session?.user?.name}</span>
+          <Button
+            onClick={() => signOut()}
+            variant="contained"
+            color="secondary"
+          >
             Sign out
           </Button>
         </>
       )}
       {status !== "authenticated" && (
-        <>
-          <Button onClick={() => signIn()} variant="contained" color="primary">
-            Sign in
-          </Button>
-        </>
+        <Button onClick={() => signIn()} variant="contained" color="secondary">
+          Sign in
+        </Button>
       )}
     </>
   );

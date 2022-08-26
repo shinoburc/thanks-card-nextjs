@@ -96,7 +96,18 @@ const Drawer = styled(MuiDrawer, {
   },
 }));
 
-const mdTheme = createTheme();
+const mdTheme = createTheme({
+  /*
+  palette: {
+    mode: "light",
+    primary: {
+      main: "#d87274",
+      light: "#ffa2a3",
+      dark: "#a34449",
+    },
+  },
+  */
+});
 
 type LayoutProps = Required<{
   readonly children: ReactElement;
@@ -139,6 +150,7 @@ export default function Layout({ children }: LayoutProps) {
             >
               ThanksCard
             </Typography>
+            <AccountInfo />
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <NotificationsIcon />
@@ -179,7 +191,6 @@ export default function Layout({ children }: LayoutProps) {
           }}
         >
           <Toolbar />
-          <AccountInfo />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
               {/* Chart */}

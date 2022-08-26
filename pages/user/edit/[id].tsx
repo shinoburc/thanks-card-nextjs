@@ -109,9 +109,10 @@ const UserEdit: NextPage = () => {
     */
   });
 
-  if (targetUserFetchError || rolesFetchError || departmentsFetchError)
-    return <div>failed to load</div>;
-  if (!targetUser) return <div>loading...</div>;
+  if (!targetUser) return <span>loading...</span>;
+  if (targetUserFetchError || rolesFetchError || departmentsFetchError) {
+    return <span>server error</span>;
+  }
 
   return (
     <>
