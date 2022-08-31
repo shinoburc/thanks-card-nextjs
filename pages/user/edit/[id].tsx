@@ -16,7 +16,7 @@ import FormHelperText from "@mui/material/FormHelperText";
 import Button from "@mui/material/Button";
 
 import { fetcher } from "@/utils/fetcher";
-import { userFormSchema, UserFormData } from "../../../formSchema/user";
+import { userFormSchema, UserFormData } from "@/formSchema/user";
 
 const UserEdit: NextPage = () => {
   // Dynamic Routes の仕組み([id].tsx)で URL から User の id を取得する
