@@ -11,10 +11,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ThanksCard[]>
 ) {
-
   // reference: https://next-auth.js.org/tutorials/securing-pages-and-api-routes
   const token = await getToken({ req });
-  console.log("token:", token);
   // Unauthorized
   if (!token) {
     res.status(401).end();
