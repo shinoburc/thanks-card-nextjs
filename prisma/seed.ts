@@ -87,7 +87,17 @@ async function main() {
       toId: admin.id,
     },
   });
-  console.log({ tc1, tc2 });
+  const tc3 = await prisma.thanksCard.upsert({
+    where: { id: "thanks_card_test3" },
+    update: {},
+    create: {
+      title: "thankscard3 title",
+      body: "thankscard3 body",
+      fromId: user.id,
+      toId: admin.id,
+    },
+  });
+  console.log({ tc1, tc2, tc3 });
 }
 
 main()
