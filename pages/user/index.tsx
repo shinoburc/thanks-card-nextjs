@@ -20,7 +20,7 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import { fetcher } from "@/utils/fetcher";
 
 const UserList: NextPage = () => {
-  /* User の外部キー(role)も含んだ型を定義している */
+  /* User の外部キー(role, department)も含んだ型を定義している */
   type UserPayload = Prisma.UserGetPayload<{
     include: {
       role: true;
@@ -34,7 +34,7 @@ const UserList: NextPage = () => {
     const response = await fetch(`/api/user/${id}`, {
       method: "DELETE",
     });
-    // ユーザ一覧の更新
+    // mutate を使用して swr がユーザ一覧データを再取得するようにする。つまりユーザ一覧の更新。
     mutate("/api/user");
   };
 
@@ -62,7 +62,7 @@ const UserList: NextPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {/* thanks_cards 全件をテーブル出力する */}
+            {/* users 全件をテーブル出力する */}
             {users?.map((user: UserPayload) => {
               return (
                 /* 一覧系の更新箇所を特定するために一意となる key を設定する必要がある */

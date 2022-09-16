@@ -18,7 +18,7 @@ export type UserFormData = yup.InferType<typeof userFormSchema>;
 // Same as...
 /*
 type UserFormData = {
-  name: string;
+  name: string | null | undefined;
   email: string;
   password: string;
   roleId: string;

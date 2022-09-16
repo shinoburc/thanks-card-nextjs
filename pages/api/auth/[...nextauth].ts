@@ -7,6 +7,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 //import { PrismaClient } from "@prisma/client";
 //const prisma = new PrismaClient();
 import { prisma } from "@/utils/prismaSingleton";
+import { string } from "yup";
 
 export default NextAuth({
   // CredentialsProviderの場合 adapter は使用できない模様。
@@ -94,15 +95,17 @@ export default NextAuth({
           ...token,
           accessToken: user.token,
           refreshToken: user.refreshToken,
+          loginUserId: user.id,
         };
       }
 
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token, user }) {
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
       session.accessTokenExpires = token.accessTokenExpires;
+      session.loginUserId = token.loginUserId;
 
       return session;
     },
