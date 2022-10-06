@@ -15,7 +15,7 @@ import { fetcher } from "@/utils/fetcher";
 
 import { ThanksCardFormData } from "@/formSchema/thanks_card";
 
-const DepartmentUserSlect = (
+const DepartmentUserSelect = (
   props: UseControllerProps<ThanksCardFormData> & { label: string }
 ) => {
   // reference: https://react-hook-form.com/api/usecontroller
@@ -79,4 +79,4 @@ const DepartmentUserSlect = (
   );
 };
 
-export default DepartmentUserSlect;
+export default DepartmentUserSelect;
