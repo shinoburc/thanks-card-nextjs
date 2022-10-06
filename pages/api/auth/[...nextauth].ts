@@ -95,7 +95,7 @@ export default NextAuth({
           ...token,
           accessToken: user.token,
           refreshToken: user.refreshToken,
-          loginUserId: user.id,
+          userId: user.id,
         };
       }
 
@@ -105,7 +105,7 @@ export default NextAuth({
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
       session.accessTokenExpires = token.accessTokenExpires;
-      session.loginUserId = token.loginUserId;
+      session.user.id = token.userId as string;
 
       return session;
     },

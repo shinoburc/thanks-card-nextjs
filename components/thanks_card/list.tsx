@@ -15,6 +15,7 @@ import { fetcher } from "@/utils/fetcher";
 
 type Props = {
   children?: ReactNode;
+  toId: string | undefined;
 };
 
 function ThanksCardList(props: Props) {
@@ -27,7 +28,7 @@ function ThanksCardList(props: Props) {
   }>;
   /* SWR を使用して /api/thanks_card からデータを取得し、 thanks_cards 配列で受け取る */
   const { data: thanks_cards, error } = useSWR<ThanksCardPayload[]>(
-    "/api/thanks_card",
+    `/api/thanks_card?toId=${props.toId}`,
     fetcher
   );
 

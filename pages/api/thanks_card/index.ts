@@ -22,10 +22,14 @@ const handleGet = async (
   req: NextApiRequest,
   res: NextApiResponse<ThanksCard[]>
 ) => {
+  const toId = req.query.toId as string;
   const thanks_cards = await prisma.thanksCard.findMany({
     include: {
       from: true,
       to: true,
+    },
+    where: {
+      toId: toId,
     },
   });
   res.status(200).json(thanks_cards);
