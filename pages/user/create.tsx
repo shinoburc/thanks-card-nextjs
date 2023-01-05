@@ -94,6 +94,7 @@ const UserCreate: NextPage = () => {
         <Select
           label="role"
           required
+          defaultValue=""
           error={"roleId" in errors}
           {...register("roleId")}
         >
@@ -127,6 +128,7 @@ const UserCreate: NextPage = () => {
         <Select
           label="department"
           required
+          defaultValue=""
           error={"departmentId" in errors}
           {...register("departmentId")}
         >
