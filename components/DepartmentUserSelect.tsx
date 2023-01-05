@@ -16,7 +16,10 @@ import { fetcher } from "@/utils/fetcher";
 import { ThanksCardFormData } from "@/formSchema/thanks_card";
 
 const DepartmentUserSelect = (
-  props: UseControllerProps<ThanksCardFormData> & { label: string }
+  props: UseControllerProps<ThanksCardFormData> & {
+    name: string;
+    label: string;
+  }
 ) => {
   // reference: https://react-hook-form.com/api/usecontroller
   // React Hook Form で管理された field をこのコンポーネントで使用する。
@@ -32,14 +35,17 @@ const DepartmentUserSelect = (
     Prisma.DepartmentCreateInput[]
   >("/api/department", fetcher);
 
+  let api_url;
+  if (departmentId) {
+    api_url = `/api/department/${departmentId}/users`;
+  } else {
+    api_url = `/api/user`;
+  }
   const {
     data: users,
     error: user_error,
     mutate,
-  } = useSWR<Prisma.UserCreateInput[]>(
-    `/api/department/${departmentId}/users`,
-    fetcher
-  );
+  } = useSWR<Prisma.UserCreateInput[]>(api_url, fetcher);
 
   const departmentOnChange = async (event: SelectChangeEvent<string>) => {
     const departmentId = event.target.value;
@@ -48,11 +54,19 @@ const DepartmentUserSelect = (
     setDepartmentId(departmentId);
   };
 
+  if (!departments) {
+    return <></>;
+  }
+
   return (
     <>
       <FormControl fullWidth>
         <InputLabel>Department</InputLabel>
-        <Select label="department" onChange={departmentOnChange}>
+        <Select
+          label="department"
+          defaultValue={departments.at(0)?.id}
+          onChange={departmentOnChange}
+        >
           {departments?.map((department) => {
             return (
               <MenuItem key={department.id} value={department.id}>

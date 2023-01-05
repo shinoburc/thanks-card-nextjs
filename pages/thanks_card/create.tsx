@@ -38,7 +38,7 @@ const ThanksCardCreate: NextPage = () => {
 
   const onSubmit = handleSubmit(async (formData) => {
     // fromId(送り主) をログイン中のユーザIDとする
-    formData.fromId = session?.loginUserId as string;
+    formData.fromId = session?.user.id as string;
     const response = await fetch("/api/thanks_card", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -84,7 +84,12 @@ const ThanksCardCreate: NextPage = () => {
             {...register("body")}
           />
         </FormControl>
-        <DepartmentUserSelect control={control} name="toId" label="To" />
+        <DepartmentUserSelect
+          control={control}
+          name="toId"
+          label="To"
+          defaultValue=""
+        />
         <Button type="submit" variant="contained" color="primary">
           Submit
         </Button>
